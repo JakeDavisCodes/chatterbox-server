@@ -9,7 +9,7 @@ var FormView = {
   handleSubmit: function(event) {
     // Stop the browser from submitting the form
     event.preventDefault();
-    
+
 
     var message = {
       username: App.username,
@@ -21,11 +21,11 @@ var FormView = {
       _.extend(message, data[0]);
       Messages.add(message, MessagesView.render);
     });
-      },
+  },
 
   setStatus: function(active) {
     var status = active ? 'true' : null;
-    FormView.$form.find('input[type=submit]').attr('disabled', status);
+    FormView.$form.find('input[type=submit]').attr('disabled', false);
   }
 
 };
