@@ -40,56 +40,46 @@ var requestHandler = function(request, response) {
   // console.logs in your code.
   console.log('Serving request type ' + request.method + ' for url ' + request.url);
   var headers = defaultCorsHeaders;
-  var statusCode = 404;
-  var endpoints = ['/classes/messages'];
+  var statusCode = 500;
+  var endpoints = ['/classes/messages', '/'];
+
+  const MESSAGES = '/classes/messages';
+  const DOMAIN = '/';
+
   if (!endpoints.includes(request.url)) {
     response.writeHead(404, headers);
     response.end();
-  }
-
-  // request.on('error', (err) => {
-  //   console.error(err);
-  //   response.statusCode = 400;
-  //   response.end();
-  // });
-  // response.on('error', (err) => {
-  //   console.error(err);
-  // });
-
-  if (request.method === 'GET') {
+  } else if (request.method === 'GET') {
     var res;
-    if (request.url === '/classes/messages') {
+    if (request.url === MESSAGES) {
+      res = messages;
+      statusCode = 200;
+    } else if (request.url === DOMAIN) {
       res = messages;
       statusCode = 200;
     }
     response.writeHead(statusCode, headers);
     response.end(JSON.stringify(res || []));
+
   } else if (request.method === 'POST') {
-    messages.push(request._postData);
-    response.writeHead(201, headers);
-    response.end(JSON.stringify(body));
+    console.log('POST');
+    var body = '';
+    request.on('data', (data) => {
+      body += data;
+      console.log('Partial body: ' + body);
+    });
+    request.on('end', () => {
+      console.log('Body: ' + body);
+      messages.push(JSON.parse(body));
+      response.writeHead(201, {'Content-Type': 'text/html'});
+      response.end('post received');
+    });
+
   } else {
-    // response.statusCode = 404;
-    response.writeHead(404, headers);
+    response.writeHead(500, headers);
     response.end();
+
   }
-  // The outgoing status.
-
-  // Tell the client we are sending them plain text.
-  //
-  // You will need to change this if you are sending something
-  // other than plain text, like JSON or HTML.
-  // headers['Content-Type'] = 'text/plain';
-
-  // .writeHead() writes to the request line and headers of the response,
-  // which includes the status and all headers.
-  // Make sure to always call response.end() - Node may not send
-  // anything back to the client until you do. The string you pass to
-  // response.end() will be the body of the response - i.e. what shows
-  // up in the browser.
-  //
-  // Calling .end "flushes" the response's internal buffer, forcing
-  // node to actually send all the data over to the client.
 };
 
 exports.requestHandler = requestHandler;
