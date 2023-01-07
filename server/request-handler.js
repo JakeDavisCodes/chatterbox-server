@@ -11,7 +11,6 @@ this file and include it in basic-server.js so that it actually works.
 *Hint* Check out the node module documentation at http://nodejs.org/api/modules.html.
 
 **************************************************************/
-var http = require('http');
 
 var defaultCorsHeaders = {
   'access-control-allow-origin': '*',
@@ -51,7 +50,6 @@ var requestHandler = function(request, response) {
     response.writeHead(404, headers);
     response.end();
   } else if (request.method === 'GET') {
-    headers['Content-Type'] = 'text/plain';
     var res;
     if (request.url === MESSAGES) {
       res = messages;
@@ -66,7 +64,6 @@ var requestHandler = function(request, response) {
   } else if (request.method === 'POST') {
     console.log('POST');
     var body = '';
-    headers['Content-Type'] = 'text/plain';
     request.on('data', (data) => {
       body += data;
       console.log('Partial body: ' + body);
@@ -74,10 +71,9 @@ var requestHandler = function(request, response) {
     request.on('end', () => {
       console.log('Body: ' + body);
       messages.push(JSON.parse(body));
-      response.writeHead(201, headers);
+      response.writeHead(201, {'Content-Type': 'text/html'});
       response.end('post received');
     });
-
 
   } else {
     response.writeHead(500, headers);

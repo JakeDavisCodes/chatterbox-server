@@ -5,12 +5,11 @@ var MessagesView = {
   initialize: function() {
 
     MessagesView.$chats.on('click', '.username', MessagesView.handleClick);
-  },
+      },
 
   render: function() {
 
     MessagesView.$chats.html('');
-    console.log(Messages._data);
     Messages
       .items()
       .filter(message => Rooms.isSelected(message.roomname))
@@ -28,6 +27,6 @@ var MessagesView = {
     if (username === undefined) { return; }
 
     Friends.toggleStatus(username, MessagesView.render);
-  }
+      }
 
 };
