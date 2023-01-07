@@ -92,4 +92,39 @@ describe('Node Server Request Listener Function', function() {
     expect(res._ended).to.equal(true);
   });
 
+  it('Should post messages with different keys', function() {
+    var stubMsg = {
+      name: 'Vla\'Karnesh',
+      home: 'THE VOID',
+      intent: 'DESTRUCTION OF YOUR PUNY REALM'
+    };
+    var req = new stubs.request('/classes/messages', 'POST', stubMsg);
+    var res = new stubs.response();
+
+    handler.requestHandler(req, res);
+
+    expect(res._responseCode).to.equal(201);
+
+    req = new stubs.request('/classes/messages', 'GET');
+    res = new stubs.response();
+
+    handler.requestHandler(req, res);
+
+    expect(res._responseCode).to.equal(200);
+    var messages = JSON.parse(res._data);
+    expect(messages[2].home).to.equal('THE VOID');
+  });
+
+  it('Should return correct number of posted messages', function() {
+    var req = new stubs.request('/classes/messages', 'GET');
+    var res = new stubs.response();
+
+    handler.requestHandler(req, res);
+
+    expect(res._responseCode).to.equal(200);
+    expect(res._ended).to.equal(true);
+    var messages = JSON.parse(res._data);
+    expect(messages.length).to.equal(3);
+  });
+
 });
