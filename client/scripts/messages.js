@@ -14,9 +14,12 @@ var Messages = {
 
   update: function(messages, callback = ()=>{}) {
     var length = Object.keys(Messages._data).length;
+    messages = JSON.parse(messages);
 
-    for (let message of messages) {
-      Messages._data[message.message_id] = Messages._conform(message);
+    for (let i = 0; i < messages.length; i++) {
+      console.log(messages[i]);
+      messages[i].message_id = Math.floor(Math.random() * 10000);
+      Messages._data[messages[i].message_id] = Messages._conform(messages[i]);
     }
 
     // only invoke the callback if something changed
@@ -32,5 +35,5 @@ var Messages = {
     message.roomname = message.roomname || '';
     return message;
   }
-  
+
 };
